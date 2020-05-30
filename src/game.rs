@@ -56,4 +56,9 @@ impl Game {
             self.cell_height,
         )
     }
+
+    pub fn clear(&self) {
+        self.ctx.set_fill_style_color("white");
+        self.ctx.fill_rect(0.0, 0.0, self.width, self.height);
+    }
 }
