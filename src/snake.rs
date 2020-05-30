@@ -70,9 +70,11 @@ impl Snake {
         self.draw(game);
     }
 
-    pub fn draw(&self, game: &game::Game) {
+    fn draw(&self, game: &game::Game) {
         game.clear();
-        for cell in &self.body {
+        let head = self.body.first().cloned().unwrap();
+        game.draw_cell(head.0, head.1, "lightgreen");
+        for (_, cell) in self.body.iter().enumerate().skip(1) {
             game.draw_cell(cell.0, cell.1, "green");
         }
     }
