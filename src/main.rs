@@ -15,8 +15,8 @@ fn main() {
 }
 
 fn fill_random_grid(game: &game::Game) {
-    for x in 0..40 {
-        for y in 0..30 {
+    for x in 0..game.grid_width {
+        for y in 0..game.grid_height {
             game.draw_cell(x, y, &utils::get_random_color());
         }
     }
