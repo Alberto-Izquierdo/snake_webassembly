@@ -1,3 +1,6 @@
+//#[macro_use]
+extern crate stdweb;
+
 fn main() {
-    println!("Hello, world!");
+    stdweb::web::alert("Hello world!");
 }
