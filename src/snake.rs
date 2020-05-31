@@ -30,7 +30,10 @@ pub struct Snake {
 
 impl Snake {
     pub fn new(game: &game::Game) -> Snake {
-        let body = vec![Cell(0, 0)];
+        let body = vec![Cell(
+            utils::generate_random_number(game.grid_width),
+            utils::generate_random_number(game.grid_height),
+        )];
         let previous_direction = Direction::RIGHT;
         let current_direction = Some(Direction::RIGHT);
         let food = spawn_random_food(&body, game);
@@ -75,6 +78,13 @@ impl Snake {
         if head == self.food {
             self.body.push(self.food);
             self.food = spawn_random_food(&self.body, game);
+        } else {
+            for (_, cell) in self.body.iter().enumerate().skip(1) {
+                if *cell == head {
+                    self.reset(game);
+                    return;
+                }
+            }
         }
 
         self.previous_direction = direction;
@@ -89,6 +99,16 @@ impl Snake {
         }
         game.draw_cell(head.0, head.1, "lightgreen");
         game.draw_cell(self.food.0, self.food.1, "red");
+    }
+
+    fn reset(&mut self, game: &game::Game) {
+        self.body = vec![Cell(
+            utils::generate_random_number(game.grid_width),
+            utils::generate_random_number(game.grid_height),
+        )];
+        self.food = spawn_random_food(&self.body, game);
+        self.previous_direction = Direction::RIGHT;
+        self.current_direction = None;
     }
 }
 
