@@ -62,3 +62,11 @@ impl Game {
         self.ctx.fill_rect(0.0, 0.0, self.width, self.height);
     }
 }
+
+pub fn update_score(new_score: u32) {
+    document()
+        .query_selector("#score")
+        .unwrap()
+        .unwrap()
+        .set_text_content(&format!("Score: {}", new_score));
+}

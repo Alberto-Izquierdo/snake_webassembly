@@ -78,6 +78,7 @@ impl Snake {
         if head == self.food {
             self.body.push(self.food);
             self.food = spawn_random_food(&self.body, game);
+            game::update_score((self.body.len() as u32 - 1) * 10);
         } else {
             for (_, cell) in self.body.iter().enumerate().skip(1) {
                 if *cell == head {
@@ -109,6 +110,7 @@ impl Snake {
         self.food = spawn_random_food(&self.body, game);
         self.previous_direction = Direction::RIGHT;
         self.current_direction = None;
+        game::update_score(0);
     }
 }
 
