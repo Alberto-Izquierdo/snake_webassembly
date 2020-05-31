@@ -1,6 +1,7 @@
 use crate::game;
+use crate::utils;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq)]
 struct Cell(u32, u32);
 
 #[derive(Copy, Clone, PartialEq)]
@@ -24,17 +25,20 @@ pub struct Snake {
     body: Vec<Cell>,
     current_direction: Option<Direction>,
     previous_direction: Direction,
+    food: Cell,
 }
 
 impl Snake {
-    pub fn new() -> Snake {
-        let body = vec![Cell(0, 0), Cell(0, 0), Cell(0, 0), Cell(0, 0), Cell(0, 0)];
+    pub fn new(game: &game::Game) -> Snake {
+        let body = vec![Cell(0, 0)];
         let previous_direction = Direction::RIGHT;
         let current_direction = Some(Direction::RIGHT);
+        let food = spawn_random_food(&body, game);
         Snake {
             body,
             current_direction,
             previous_direction,
+            food,
         }
     }
 
@@ -66,6 +70,13 @@ impl Snake {
 
         self.body.pop();
 
+        let head = self.body.first().cloned().unwrap();
+
+        if head == self.food {
+            self.body.push(self.food);
+            self.food = spawn_random_food(&self.body, game);
+        }
+
         self.previous_direction = direction;
         self.draw(game);
     }
@@ -73,9 +84,24 @@ impl Snake {
     fn draw(&self, game: &game::Game) {
         game.clear();
         let head = self.body.first().cloned().unwrap();
-        game.draw_cell(head.0, head.1, "lightgreen");
         for (_, cell) in self.body.iter().enumerate().skip(1) {
             game.draw_cell(cell.0, cell.1, "green");
         }
+        game.draw_cell(head.0, head.1, "lightgreen");
+        game.draw_cell(self.food.0, self.food.1, "red");
     }
+}
+
+fn spawn_random_food(snake: &Vec<Cell>, game: &game::Game) -> Cell {
+    let mut result: Option<Cell> = None;
+    while result.is_none() {
+        let x = utils::generate_random_number(game.grid_width);
+        let y = utils::generate_random_number(game.grid_height);
+        let food = Cell(x, y);
+        let res: Vec<&Cell> = snake.into_iter().filter(|cell| **cell == food).collect();
+        if res.is_empty() {
+            result = Some(food)
+        }
+    }
+    result.unwrap()
 }

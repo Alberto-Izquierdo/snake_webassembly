@@ -13,9 +13,9 @@ mod utils;
 fn main() {
     stdweb::initialize();
 
-    let snake = Rc::new(RefCell::new(snake::Snake::new()));
-
     let game = game::Game::new("#canvas", 800., 600.);
+
+    let snake = Rc::new(RefCell::new(snake::Snake::new(&game)));
 
     stdweb::web::document().add_event_listener({
         let snake = snake.clone();
